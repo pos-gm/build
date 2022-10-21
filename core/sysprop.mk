@@ -228,11 +228,15 @@ endif
 # harness to distinguish builds. Only add _asan for a sanitized build
 # if it isn't already a part of the flavor (via a dedicated lunch
 # config for example).
-TARGET_BUILD_FLAVOR := $(TARGET_PRODUCT)-$(TARGET_BUILD_VARIANT)
-ifneq (, $(filter address, $(SANITIZE_TARGET)))
-ifeq (,$(findstring _asan,$(TARGET_BUILD_FLAVOR)))
-TARGET_BUILD_FLAVOR := $(TARGET_BUILD_FLAVOR)_asan
-endif
+ifdef CUSTOM_BUILD_FLAVOR
+  TARGET_BUILD_FLAVOR := $(CUSTOM_BUILD_FLAVOR)
+else
+  TARGET_BUILD_FLAVOR := $(TARGET_PRODUCT)-$(TARGET_BUILD_VARIANT)
+  ifneq (, $(filter address, $(SANITIZE_TARGET)))
+    ifeq (,$(findstring _asan,$(TARGET_BUILD_FLAVOR)))
+      TARGET_BUILD_FLAVOR := $(TARGET_BUILD_FLAVOR)_asan
+    endif
+  endif
 endif
 
 KNOWN_OEM_THUMBPRINT_PROPERTIES := \
